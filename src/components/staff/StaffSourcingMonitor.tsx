@@ -80,18 +80,20 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header */}
-      <div className="bg-white px-4 py-4 border-b border-gray-200">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="p-2 -ml-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Go back"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-700" />
-          </button>
-          <div className="flex-1">
-            <h1 className="text-gray-900">Sourcing Progress Monitor</h1>
-            <p className="text-gray-500 mt-1">Track volunteer sourcing in real-time</p>
+      <div className="bg-white border-b border-gray-200 flex justify-center">
+        <div className="w-full max-w-md px-4 py-4">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onBack}
+              className="p-2 -ml-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </button>
+            <div className="flex-1">
+              <h1 className="text-gray-900">Sourcing Progress Monitor</h1>
+              <p className="text-gray-500 mt-1">Track volunteer sourcing in real-time</p>
+            </div>
           </div>
         </div>
       </div>

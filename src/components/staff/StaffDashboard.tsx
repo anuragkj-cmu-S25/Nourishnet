@@ -169,29 +169,6 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
             View All Tasks
           </Button>
         </Card>
-
-        {/* Quick Actions */}
-        <Card className="p-4">
-          <h3 className="text-gray-900 mb-3">Quick Actions</h3>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => onNavigate('inventory')}
-              variant="outline"
-              className="h-auto py-4 flex flex-col items-center gap-2"
-            >
-              <Package className="w-5 h-5" />
-              <span>Check Inventory</span>
-            </Button>
-            <Button
-              onClick={() => onNavigate('inbox')}
-              variant="outline"
-              className="h-auto py-4 flex flex-col items-center gap-2"
-            >
-              <Mail className="w-5 h-5" />
-              <span>Check Inbox</span>
-            </Button>
-          </div>
-        </Card>
       </div>
     </div>
   );

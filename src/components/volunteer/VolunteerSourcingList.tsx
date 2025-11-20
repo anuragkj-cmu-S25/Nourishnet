@@ -140,20 +140,22 @@ export function VolunteerSourcingList() {
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header - Fixed */}
-      <div className="fixed top-0 left-0 right-0 bg-white px-4 py-4 border-b border-gray-200 z-10">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <h1 className="text-gray-900">Today's Sourcing List</h1>
-            <p className="text-gray-500 mt-1">Welcome, {user?.full_name}</p>
+      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
+        <div className="w-full max-w-md px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-gray-900">Today's Sourcing List</h1>
+              <p className="text-gray-500 mt-1">Welcome, {user?.full_name}</p>
+            </div>
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Refresh"
+            >
+              <RefreshCw className={`w-5 h-5 text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
           </div>
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            aria-label="Refresh"
-          >
-            <RefreshCw className={`w-5 h-5 text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
-          </button>
         </div>
       </div>
 

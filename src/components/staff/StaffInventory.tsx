@@ -4,7 +4,7 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { toast } from 'sonner@2.0.3';
@@ -171,6 +171,9 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Add to Sourcing List</DialogTitle>
+            <DialogDescription>
+              Add the selected item to the sourcing list with a target quantity.
+            </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div>

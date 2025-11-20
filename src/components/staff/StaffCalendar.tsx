@@ -61,9 +61,11 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
   return (
     <div className="flex flex-col h-full bg-gray-50">
       {/* Header - Fixed */}
-      <div className="fixed top-0 left-0 right-0 bg-white px-6 py-4 border-b border-gray-200 z-10">
-        <h1 className="text-gray-900">Shared Calendar</h1>
-        <p className="text-gray-500 mt-1">Food bank schedule</p>
+      <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
+        <div className="w-full max-w-md px-6 py-4">
+          <h1 className="text-gray-900">Shared Calendar</h1>
+          <p className="text-gray-500 mt-1">Food bank schedule</p>
+        </div>
       </div>
 
       {/* Content - Account for fixed header and bottom nav */}
@@ -73,7 +75,7 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="rounded-md border bg-white shadow-sm"
+            className="rounded-md border bg-white shadow-sm w-full"
             components={{
               DayContent
             }}

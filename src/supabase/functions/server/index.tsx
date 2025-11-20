@@ -354,4 +354,294 @@ app.get("/make-server-593da926/sourcing-logs", async (c) => {
   }
 });
 
-// Tasks API
+// ============ TASKS ROUTES ============
+
+app.get("/make-server-593da926/tasks", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const tasks = await kv.getByPrefix('task:');
+    return c.json({ tasks });
+  } catch (error) {
+    console.log('Get tasks error:', error);
+    return c.json({ error: 'Failed to fetch tasks' }, 500);
+  }
+});
+
+app.post("/make-server-593da926/tasks", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const { title, description, assignedTo, priority, dueDate } = await c.req.json();
+    
+    const taskId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const task = {
+      id: taskId,
+      title,
+      description,
+      assignedTo,
+      priority: priority || 'medium',
+      dueDate,
+      status: 'pending',
+      created_at: new Date().toISOString(),
+      created_by: user.id,
+    };
+    
+    await kv.set(`task:${taskId}`, task);
+    
+    return c.json({ task });
+  } catch (error) {
+    console.log('Create task error:', error);
+    return c.json({ error: 'Failed to create task' }, 500);
+  }
+});
+
+app.put("/make-server-593da926/tasks/:id", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const taskId = c.req.param('id');
+    const updates = await c.req.json();
+    
+    const task = await kv.get(`task:${taskId}`);
+    
+    if (!task) {
+      return c.json({ error: 'Task not found' }, 404);
+    }
+    
+    const updatedTask = {
+      ...task,
+      ...updates,
+      updated_at: new Date().toISOString(),
+    };
+    
+    await kv.set(`task:${taskId}`, updatedTask);
+    
+    return c.json({ task: updatedTask });
+  } catch (error) {
+    console.log('Update task error:', error);
+    return c.json({ error: 'Failed to update task' }, 500);
+  }
+});
+
+app.delete("/make-server-593da926/tasks/:id", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const taskId = c.req.param('id');
+    await kv.del(`task:${taskId}`);
+    
+    return c.json({ success: true });
+  } catch (error) {
+    console.log('Delete task error:', error);
+    return c.json({ error: 'Failed to delete task' }, 500);
+  }
+});
+
+// ============ EMAIL ROUTES ============
+
+app.get("/make-server-593da926/emails", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const emails = await kv.getByPrefix('email:');
+    return c.json({ emails });
+  } catch (error) {
+    console.log('Get emails error:', error);
+    return c.json({ error: 'Failed to fetch emails' }, 500);
+  }
+});
+
+app.get("/make-server-593da926/emails/forwarded", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const allEmails = await kv.getByPrefix('email:');
+    const forwardedEmails = allEmails.filter((email: any) => email.forwardedTo === user.id);
+    return c.json({ emails: forwardedEmails });
+  } catch (error) {
+    console.log('Get forwarded emails error:', error);
+    return c.json({ error: 'Failed to fetch forwarded emails' }, 500);
+  }
+});
+
+app.post("/make-server-593da926/emails/:id/forward", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const emailId = c.req.param('id');
+    const { volunteerId } = await c.req.json();
+    
+    const email = await kv.get(`email:${emailId}`);
+    
+    if (!email) {
+      return c.json({ error: 'Email not found' }, 404);
+    }
+    
+    const updatedEmail = {
+      ...email,
+      forwardedTo: volunteerId,
+      forwarded_at: new Date().toISOString(),
+    };
+    
+    await kv.set(`email:${emailId}`, updatedEmail);
+    
+    return c.json({ success: true });
+  } catch (error) {
+    console.log('Forward email error:', error);
+    return c.json({ error: 'Failed to forward email' }, 500);
+  }
+});
+
+// ============ CALENDAR ROUTES ============
+
+app.get("/make-server-593da926/calendar", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const events = await kv.getByPrefix('calendar:');
+    return c.json({ events });
+  } catch (error) {
+    console.log('Get calendar events error:', error);
+    return c.json({ error: 'Failed to fetch calendar events' }, 500);
+  }
+});
+
+app.post("/make-server-593da926/calendar/from-email", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const { emailId, title, date, time } = await c.req.json();
+    
+    const eventId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const event = {
+      id: eventId,
+      source_email_id: emailId,
+      title,
+      date,
+      time,
+      created_at: new Date().toISOString(),
+      created_by: user.id,
+    };
+    
+    await kv.set(`calendar:${eventId}`, event);
+    
+    return c.json({ event });
+  } catch (error) {
+    console.log('Create calendar event error:', error);
+    return c.json({ error: 'Failed to create calendar event' }, 500);
+  }
+});
+
+// ============ VOLUNTEERS ROUTE ============
+
+app.get("/make-server-593da926/volunteers", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const profiles = await kv.getByPrefix('profile:');
+    const volunteers = profiles.filter((p: any) => p.role === 'volunteer');
+    return c.json({ volunteers });
+  } catch (error) {
+    console.log('Get volunteers error:', error);
+    return c.json({ error: 'Failed to fetch volunteers' }, 500);
+  }
+});
+
+// ============ INIT DATA ROUTE ============
+
+app.post("/make-server-593da926/init-data", async (c) => {
+  try {
+    // Check if data already exists
+    const existingInventory = await kv.getByPrefix('inventory:');
+    if (existingInventory.length > 0) {
+      return c.json({ message: 'Data already initialized' });
+    }
+
+    // Initialize inventory
+    const inventoryItems = [
+      { id: '1', name: 'Canned Beans', category: 'Canned Goods', stock: 150, unit: 'cans', restock_level: 50, is_low_stock: false },
+      { id: '2', name: 'Rice', category: 'Grains', stock: 80, unit: 'lbs', restock_level: 100, is_low_stock: true },
+      { id: '3', name: 'Pasta', category: 'Grains', stock: 120, unit: 'boxes', restock_level: 75, is_low_stock: false },
+      { id: '4', name: 'Canned Soup', category: 'Canned Goods', stock: 90, unit: 'cans', restock_level: 60, is_low_stock: false },
+      { id: '5', name: 'Peanut Butter', category: 'Protein', stock: 40, unit: 'jars', restock_level: 45, is_low_stock: true },
+      { id: '6', name: 'Cereal', category: 'Breakfast', stock: 65, unit: 'boxes', restock_level: 50, is_low_stock: false },
+      { id: '7', name: 'Canned Vegetables', category: 'Canned Goods', stock: 110, unit: 'cans', restock_level: 70, is_low_stock: false },
+      { id: '8', name: 'Cooking Oil', category: 'Cooking', stock: 30, unit: 'bottles', restock_level: 40, is_low_stock: true },
+    ];
+
+    for (const item of inventoryItems) {
+      await kv.set(`inventory:${item.id}`, item);
+    }
+
+    // Initialize some sample emails
+    const sampleEmails = [
+      {
+        id: '1',
+        from: 'community@foodnetwork.org',
+        subject: 'Thanksgiving Food Drive - November 25th',
+        body: 'Join us for our annual Thanksgiving food drive on November 25th at 10 AM. We need volunteers to help sort and distribute food packages.',
+        date: '2024-11-15',
+      },
+      {
+        id: '2',
+        from: 'donations@localchurch.org',
+        subject: 'Large Donation Available for Pickup',
+        body: 'We have a large donation of canned goods available. Can someone pick it up this week?',
+        date: '2024-11-18',
+      },
+    ];
+
+    for (const email of sampleEmails) {
+      await kv.set(`email:${email.id}`, email);
+    }
+
+    return c.json({ message: 'Data initialized successfully' });
+  } catch (error) {
+    console.log('Init data error:', error);
+    return c.json({ error: 'Failed to initialize data' }, 500);
+  }
+});
+
+// Start the server
+Deno.serve(app.fetch);

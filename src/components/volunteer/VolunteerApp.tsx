@@ -15,7 +15,7 @@ export function VolunteerApp() {
       case 'sourcing-list':
         return <VolunteerSourcingList />;
       case 'inbox':
-        return <VolunteerInbox />;
+        return <VolunteerInbox onNavigate={setActiveScreen} />;
       case 'calendar':
         return <VolunteerCalendar />;
       case 'profile':

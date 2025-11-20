@@ -5,7 +5,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Checkbox } from '../ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Progress } from '../ui/progress';
 import { toast } from 'sonner@2.0.3';
@@ -169,16 +169,15 @@ export function StaffTasks() {
           </div>
         )}
         
-        {/* Add Task Button for Desktop - Inside content area */}
-        <div className="hidden md:flex justify-center pt-4">
-          <Button
-            onClick={() => setIsAddModalOpen(true)}
-            className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center"
-            aria-label="Add task"
-          >
-            <Plus className="w-6 h-6" />
-          </Button>
-        </div>
+        {/* Add Task Button for Desktop - Fixed position on right */}
+        <Button
+          onClick={() => setIsAddModalOpen(true)}
+          className="hidden md:flex fixed bottom-20 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-50"
+          style={{ maxWidth: 'calc(448px - 1rem)', right: 'max(1rem, calc(50% - 224px + 1rem))' }}
+          aria-label="Add task"
+        >
+          <Plus className="w-6 h-6" />
+        </Button>
       </div>
 
       {/* Add Task Button for Mobile - Fixed position */}
@@ -195,6 +194,7 @@ export function StaffTasks() {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Add New Task</DialogTitle>
+            <DialogDescription>Enter the task details below.</DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div>

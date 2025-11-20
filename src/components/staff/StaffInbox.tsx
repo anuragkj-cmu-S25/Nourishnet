@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Mail, Forward, Calendar } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { toast } from 'sonner@2.0.3';
@@ -199,6 +199,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Forward Email to Volunteer</DialogTitle>
+            <DialogDescription>Select a volunteer to forward the email to.</DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">
             <div>
