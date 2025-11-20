@@ -132,8 +132,8 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
             onClick={() => onNavigate('inventory')}
           >
             <div className="flex items-start gap-3">
-              <div className="bg-green-100 p-3 rounded-lg flex-shrink-0">
-                <Apple className="w-6 h-6 text-green-600" />
+              <div className="bg-blue-100 p-3 rounded-lg flex-shrink-0">
+                <Apple className="w-6 h-6 text-blue-600" />
               </div>
               <div className="flex-1">
                 <h3 className="text-gray-900">Top Items to Restock</h3>

@@ -70,17 +70,19 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
 
       {/* Content - Account for fixed header and bottom nav */}
       <div className="flex-1 overflow-y-auto px-4 py-4 mt-24 mb-16 space-y-4">
-        <div className="mx-auto" style={{ maxWidth: '400px' }}>
-          <Calendar
-            mode="single"
-            selected={date}
-            onSelect={setDate}
-            className="rounded-md border bg-white shadow-sm w-full"
-            components={{
-              DayContent
-            }}
-          />
-        </div>
+        <Calendar
+          mode="single"
+          selected={date}
+          onSelect={setDate}
+          className="rounded-md border bg-white shadow-sm w-full"
+          classNames={{
+            head_row: "flex justify-between",
+            row: "flex w-full mt-2 justify-between"
+          }}
+          components={{
+            DayContent
+          }}
+        />
 
         {/* Events for Selected Date */}
         {date && (
