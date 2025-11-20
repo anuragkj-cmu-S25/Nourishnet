@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Minus, Plus, CheckCircle2, RefreshCw } from 'lucide-react';
+import { Minus, Plus, CheckCircle2, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
@@ -14,12 +14,14 @@ interface SourcingItem {
   unit: string;
   totalSourced: number;
   status: string;
-  sourcedQuantity: number; // Local quantity being entered
+  sourcedQuantity: number;
 }
 
 export function VolunteerSourcingList() {
   const { user, session } = useAuth();
   const [sourcingItems, setSourcingItems] = useState<SourcingItem[]>([]);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [submittedItemName, setSubmittedItemName] = useState('');
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,6 @@ export function VolunteerSourcingList() {
 
   useEffect(() => {
     loadData();
-    // Poll for updates every 15 seconds
     const interval = setInterval(loadData, 15000);
     return () => clearInterval(interval);
   }, [session]);
@@ -37,15 +38,20 @@ export function VolunteerSourcingList() {
     if (!session?.access_token) return;
 
     try {
-      const data = await sourcingAPI.getList(session.access_token);
-      const items = (data.items || [])
-        .filter((item: any) => item.status === 'active') // Only show active items
+      const [sourcingData, logsData] = await Promise.all([
+        sourcingAPI.getList(session.access_token),
+        sourcingAPI.getAllLogs(session.access_token),
+      ]);
+
+      const items = (sourcingData.items || [])
+        .filter((item: any) => item.status === 'active')
         .map((item: any) => ({
           ...item,
           sourcedQuantity: 0,
         }));
       
       setSourcingItems(items);
+      setLogs(logsData.logs || []);
     } catch (error) {
       console.error('Error loading sourcing list:', error);
       toast.error('Failed to load sourcing list');
@@ -91,12 +97,10 @@ export function VolunteerSourcingList() {
       setSubmittedItemName(item.name);
       setShowSuccessModal(true);
       
-      // Reset this item's quantity
       setSourcingItems(items =>
         items.map(i => (i.id === item.id ? { ...i, sourcedQuantity: 0 } : i))
       );
       
-      // Reload to get updated totals
       setTimeout(loadData, 1000);
     } catch (error: any) {
       console.error('Error submitting sourcing:', error);
@@ -106,9 +110,20 @@ export function VolunteerSourcingList() {
     }
   };
 
-  const handleCloseSuccessModal = () => {
-    setShowSuccessModal(false);
-    setSubmittedItemName('');
+  const toggleExpanded = (itemId: string) => {
+    setExpandedItems(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
+  };
+
+  const getLogsForItem = (itemId: string) => {
+    return logs.filter(log => log.item_id === itemId);
   };
 
   if (loading) {
@@ -124,8 +139,8 @@ export function VolunteerSourcingList() {
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      {/* Header */}
-      <div className="bg-white px-4 py-4 border-b border-gray-200">
+      {/* Header - Fixed */}
+      <div className="fixed top-0 left-0 right-0 bg-white px-4 py-4 border-b border-gray-200 z-10">
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <h1 className="text-gray-900">Today's Sourcing List</h1>
@@ -142,13 +157,15 @@ export function VolunteerSourcingList() {
         </div>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4">
+      {/* Content - Account for fixed header and bottom nav */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 mt-24 mb-16">
         {sourcingItems.length > 0 ? (
           <div className="space-y-3">
             {sourcingItems.map((item) => {
               const remainingNeeded = Math.max(0, item.targetQuantity - (item.totalSourced || 0));
               const isSubmitting = submittingItemId === item.id;
+              const isExpanded = expandedItems.has(item.id);
+              const itemLogs = getLogsForItem(item.id);
               
               return (
                 <Card key={item.id} className="p-4 bg-white">
@@ -159,13 +176,48 @@ export function VolunteerSourcingList() {
                       <p className="text-gray-600 mt-1">
                         Target: {item.targetQuantity} {item.unit}
                       </p>
-                      <p className="text-gray-600">
-                        Already sourced: {item.totalSourced || 0} {item.unit}
-                      </p>
                       <p className="text-blue-600 mt-1">
                         Still needed: {remainingNeeded} {item.unit}
                       </p>
                     </div>
+
+                    {/* View Sourcing Logs */}
+                    {itemLogs.length > 0 && (
+                      <div>
+                        <button
+                          onClick={() => toggleExpanded(item.id)}
+                          className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                        >
+                          {isExpanded ? (
+                            <ChevronUp className="w-4 h-4" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4" />
+                          )}
+                          <span>View Sourcing Logs ({itemLogs.length})</span>
+                        </button>
+
+                        {isExpanded && (
+                          <div className="mt-3 space-y-2 border-t border-gray-200 pt-3">
+                            {itemLogs.map((log) => (
+                              <div
+                                key={log.id}
+                                className="flex justify-between items-start text-sm bg-gray-50 p-2 rounded"
+                              >
+                                <div>
+                                  <p className="text-gray-900">{log.volunteer_name}</p>
+                                  <p className="text-gray-600">
+                                    {new Date(log.timestamp).toLocaleString()}
+                                  </p>
+                                </div>
+                                <p className="text-gray-900">
+                                  +{log.quantity} {item.unit}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Quantity Stepper */}
                     <div className="flex items-center justify-between">
@@ -228,7 +280,7 @@ export function VolunteerSourcingList() {
           </DialogHeader>
           <div className="pt-4">
             <Button
-              onClick={handleCloseSuccessModal}
+              onClick={() => setShowSuccessModal(false)}
               className="w-full bg-blue-600 hover:bg-blue-700 text-white"
             >
               Done

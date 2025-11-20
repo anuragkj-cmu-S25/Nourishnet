@@ -169,19 +169,19 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
                     onClick={() => handleForward(email)}
                     size="sm"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                   >
-                    <Forward className="w-4 h-4 mr-2" />
-                    Forward to Volunteer
+                    <Forward className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Forward</span>
                   </Button>
                   <Button
                     onClick={() => handleAddToCalendar(email)}
                     size="sm"
                     variant="outline"
-                    className="flex-1"
+                    className="flex-1 min-w-0"
                   >
-                    <Calendar className="w-4 h-4 mr-2" />
-                    Add to Calendar
+                    <Calendar className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Calendar</span>
                   </Button>
                 </div>
               </div>

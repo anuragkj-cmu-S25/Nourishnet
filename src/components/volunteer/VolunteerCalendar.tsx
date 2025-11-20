@@ -49,25 +49,25 @@ export function VolunteerCalendar() {
 
   return (
     <div className="flex flex-col h-full bg-gray-50">
-      {/* Header */}
-      <div className="bg-white px-6 py-4 border-b border-gray-200">
+      {/* Header - Fixed */}
+      <div className="fixed top-0 left-0 right-0 bg-white px-6 py-4 border-b border-gray-200 z-10">
         <h1 className="text-gray-900">My Calendar</h1>
         <p className="text-gray-500 mt-1">Your personal schedule</p>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        <Card className="p-2">
+      {/* Content - Account for fixed header and bottom nav */}
+      <div className="flex-1 overflow-y-auto px-4 py-4 mt-24 mb-16 space-y-4">
+        <div className="mx-auto" style={{ maxWidth: '400px' }}>
           <Calendar
             mode="single"
             selected={date}
             onSelect={setDate}
-            className="w-full"
+            className="rounded-md border bg-white shadow-sm"
             components={{
               DayContent
             }}
           />
-        </Card>
+        </div>
 
         {/* Events for Selected Date */}
         {date && (

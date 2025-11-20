@@ -58,8 +58,8 @@ export const sourcingAPI = {
       body: JSON.stringify({ items }),
     }, accessToken),
 
-  getLogs: (itemId: string, accessToken: string) =>
-    apiRequest(`/sourcing-logs/${itemId}`, { method: 'GET' }, accessToken),
+  getAllLogs: (accessToken: string) =>
+    apiRequest('/sourcing-logs', { method: 'GET' }, accessToken),
 };
 
 // Tasks API
@@ -87,6 +87,9 @@ export const tasksAPI = {
 export const emailAPI = {
   getAll: (accessToken: string) =>
     apiRequest('/emails', { method: 'GET' }, accessToken),
+
+  getForwarded: (accessToken: string) =>
+    apiRequest('/emails/forwarded', { method: 'GET' }, accessToken),
 
   forward: (emailId: string, volunteerId: string, accessToken: string) =>
     apiRequest(`/emails/${emailId}/forward`, {

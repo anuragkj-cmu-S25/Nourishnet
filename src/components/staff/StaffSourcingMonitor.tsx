@@ -48,8 +48,10 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
       // Load logs if not already loaded
       if (!itemLogs[itemId] && session?.access_token) {
         try {
-          const data = await sourcingAPI.getLogs(itemId, session.access_token);
-          setItemLogs(prev => ({ ...prev, [itemId]: data.logs || [] }));
+          const data = await sourcingAPI.getAllLogs(session.access_token);
+          // Filter logs for this specific item
+          const itemSpecificLogs = (data.logs || []).filter((log: any) => log.item_id === itemId);
+          setItemLogs(prev => ({ ...prev, [itemId]: itemSpecificLogs }));
         } catch (error) {
           console.error('Error loading logs:', error);
         }
