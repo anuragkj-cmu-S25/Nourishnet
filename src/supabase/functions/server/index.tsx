@@ -30,13 +30,25 @@ app.use(
 // Helper function to verify auth token
 async function verifyAuth(authHeader: string | null) {
   if (!authHeader) {
+    console.log('Authorization error: No authorization header provided');
     return { user: null, error: 'No authorization header' };
   }
   
   const token = authHeader.split(' ')[1];
+  if (!token) {
+    console.log('Authorization error: No token found in header');
+    return { user: null, error: 'No token in header' };
+  }
+  
   const { data: { user }, error } = await supabase.auth.getUser(token);
   
-  if (error || !user) {
+  if (error) {
+    console.log('Authorization error while verifying token:', error);
+    return { user: null, error: 'Invalid token' };
+  }
+  
+  if (!user) {
+    console.log('Authorization error: No user found for token');
     return { user: null, error: 'Invalid token' };
   }
   
@@ -600,14 +612,14 @@ app.post("/make-server-593da926/init-data", async (c) => {
 
     // Initialize inventory
     const inventoryItems = [
-      { id: '1', name: 'Canned Beans', category: 'Canned Goods', stock: 150, unit: 'cans', restock_level: 50, is_low_stock: false },
-      { id: '2', name: 'Rice', category: 'Grains', stock: 80, unit: 'lbs', restock_level: 100, is_low_stock: true },
-      { id: '3', name: 'Pasta', category: 'Grains', stock: 120, unit: 'boxes', restock_level: 75, is_low_stock: false },
-      { id: '4', name: 'Canned Soup', category: 'Canned Goods', stock: 90, unit: 'cans', restock_level: 60, is_low_stock: false },
-      { id: '5', name: 'Peanut Butter', category: 'Protein', stock: 40, unit: 'jars', restock_level: 45, is_low_stock: true },
-      { id: '6', name: 'Cereal', category: 'Breakfast', stock: 65, unit: 'boxes', restock_level: 50, is_low_stock: false },
-      { id: '7', name: 'Canned Vegetables', category: 'Canned Goods', stock: 110, unit: 'cans', restock_level: 70, is_low_stock: false },
-      { id: '8', name: 'Cooking Oil', category: 'Cooking', stock: 30, unit: 'bottles', restock_level: 40, is_low_stock: true },
+      { id: '1', name: 'Canned Beans', category: 'Canned Goods', stock: 150, unit: 'cans', low_stock_threshold: 50, is_low_stock: false },
+      { id: '2', name: 'Rice', category: 'Grains', stock: 80, unit: 'lbs', low_stock_threshold: 100, is_low_stock: true },
+      { id: '3', name: 'Pasta', category: 'Grains', stock: 120, unit: 'boxes', low_stock_threshold: 75, is_low_stock: false },
+      { id: '4', name: 'Canned Soup', category: 'Canned Goods', stock: 90, unit: 'cans', low_stock_threshold: 60, is_low_stock: false },
+      { id: '5', name: 'Peanut Butter', category: 'Protein', stock: 40, unit: 'jars', low_stock_threshold: 45, is_low_stock: true },
+      { id: '6', name: 'Cereal', category: 'Breakfast', stock: 65, unit: 'boxes', low_stock_threshold: 50, is_low_stock: false },
+      { id: '7', name: 'Canned Vegetables', category: 'Canned Goods', stock: 110, unit: 'cans', low_stock_threshold: 70, is_low_stock: false },
+      { id: '8', name: 'Cooking Oil', category: 'Cooking', stock: 30, unit: 'bottles', low_stock_threshold: 40, is_low_stock: true },
     ];
 
     for (const item of inventoryItems) {
@@ -619,21 +631,155 @@ app.post("/make-server-593da926/init-data", async (c) => {
       {
         id: '1',
         from: 'community@foodnetwork.org',
-        subject: 'Thanksgiving Food Drive - November 25th',
-        body: 'Join us for our annual Thanksgiving food drive on November 25th at 10 AM. We need volunteers to help sort and distribute food packages.',
-        date: '2024-11-15',
+        subject: 'Holiday Food Distribution - December 15th',
+        body: 'Join us for our holiday food distribution on December 15th at 10 AM. We need volunteers to help sort and distribute food packages.',
+        date: '2025-11-18',
       },
       {
         id: '2',
         from: 'donations@localchurch.org',
-        subject: 'Large Donation Available for Pickup',
-        body: 'We have a large donation of canned goods available. Can someone pick it up this week?',
-        date: '2024-11-18',
+        subject: 'Large Donation Available for Pickup - January 10th',
+        body: 'We have a large donation of canned goods available. Can someone pick it up on January 10th at 2 PM?',
+        date: '2025-11-19',
+      },
+      {
+        id: '3',
+        from: 'volunteer@community.org',
+        subject: 'Volunteer Training - November 28th',
+        body: 'We are hosting a volunteer training session on November 28th at 3 PM. All new volunteers are welcome!',
+        date: '2025-11-15',
       },
     ];
 
     for (const email of sampleEmails) {
       await kv.set(`email:${email.id}`, email);
+    }
+
+    // Initialize sample calendar events spread across Oct 2025 - Feb 2026
+    const sampleEvents = [
+      {
+        id: 'event-1',
+        title: 'Fall Food Drive Kickoff',
+        date: '2025-10-05',
+        time: '09:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-2',
+        title: 'Community Pantry Open Day',
+        date: '2025-10-12',
+        time: '10:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-3',
+        title: 'Volunteer Appreciation Lunch',
+        date: '2025-10-20',
+        time: '12:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-4',
+        title: 'Halloween Harvest Collection',
+        date: '2025-10-31',
+        time: '14:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-5',
+        title: 'Monthly Inventory Review',
+        date: '2025-11-08',
+        time: '11:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-6',
+        title: 'Thanksgiving Prep Day',
+        date: '2025-11-20',
+        time: '08:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-7',
+        title: 'Thanksgiving Food Distribution',
+        date: '2025-11-27',
+        time: '09:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-8',
+        title: 'Holiday Planning Meeting',
+        date: '2025-12-03',
+        time: '15:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-9',
+        title: 'Winter Coat Drive',
+        date: '2025-12-10',
+        time: '10:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-10',
+        title: 'Holiday Meal Prep Day',
+        date: '2025-12-18',
+        time: '08:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-11',
+        title: 'Christmas Food Distribution',
+        date: '2025-12-24',
+        time: '09:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-12',
+        title: 'New Year Volunteer Orientation',
+        date: '2026-01-07',
+        time: '14:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-13',
+        title: 'Winter Food Drive',
+        date: '2026-01-15',
+        time: '10:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-14',
+        title: 'Quarterly Inventory Audit',
+        date: '2026-01-25',
+        time: '11:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-15',
+        title: 'Community Outreach Fair',
+        date: '2026-02-08',
+        time: '13:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-16',
+        title: 'Volunteer Training Workshop',
+        date: '2026-02-14',
+        time: '14:00',
+        created_at: new Date().toISOString(),
+      },
+      {
+        id: 'event-17',
+        title: 'Spring Planning Session',
+        date: '2026-02-22',
+        time: '15:00',
+        created_at: new Date().toISOString(),
+      },
+    ];
+
+    for (const event of sampleEvents) {
+      await kv.set(`calendar:${event.id}`, event);
     }
 
     return c.json({ message: 'Data initialized successfully' });

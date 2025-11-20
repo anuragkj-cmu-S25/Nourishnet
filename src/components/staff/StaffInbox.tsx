@@ -87,17 +87,25 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
       
       // AI stubbed: extract date from email subject/body
       // Simple regex to find dates like "November 25th", "December 3rd", etc.
-      const dateMatch = email.subject.match(/(November|December)\s+(\d+)/i) || 
-                       email.body.match(/(November|December)\s+(\d+)/i);
+      const dateMatch = email.subject.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d+)/i) || 
+                       email.body.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d+)/i);
       
-      let eventDate = new Date().toISOString().split('T')[0]; // default to today
+      // Get today's date in local timezone
+      const today = new Date();
+      let eventDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
       let eventTime = '10:00';
       
       if (dateMatch) {
-        const month = dateMatch[1];
+        const month = dateMatch[1].toLowerCase();
         const day = parseInt(dateMatch[2]);
-        const monthNum = month.toLowerCase() === 'november' ? 10 : 11; // 0-indexed
-        eventDate = `2024-${String(monthNum + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const monthMap: { [key: string]: number } = {
+          january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+          july: 6, august: 7, september: 8, october: 9, november: 10, december: 11
+        };
+        const monthNum = monthMap[month];
+        // Use 2025 for Oct-Dec, 2026 for Jan-Feb to match current date context
+        const year = monthNum >= 9 ? 2025 : 2026;
+        eventDate = `${year}-${String(monthNum + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       }
       
       // Try to extract time
@@ -121,7 +129,9 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
       );
 
       toast.success('Event added to shared calendar');
-      onNavigate('calendar', new Date(eventDate));
+      // Parse the date correctly to avoid timezone issues
+      const [year, month, day] = eventDate.split('-').map(Number);
+      onNavigate('calendar', new Date(year, month - 1, day));
     } catch (error: any) {
       console.error('Error adding to calendar:', error);
       toast.error(error.message || 'Failed to add to calendar');

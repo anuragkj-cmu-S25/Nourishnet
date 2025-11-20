@@ -52,6 +52,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     // Check active session on mount
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('AuthContext: Session loaded:', session ? 'Session exists' : 'No session');
+      if (session) {
+        console.log('AuthContext: Access token present:', !!session.access_token);
+      }
       setSession(session);
       if (session?.access_token) {
         fetchProfile(session.access_token);

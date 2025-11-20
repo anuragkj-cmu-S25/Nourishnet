@@ -21,8 +21,12 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
   }, [session]);
 
   const loadData = async () => {
-    if (!session?.access_token) return;
+    if (!session?.access_token) {
+      console.log('StaffDashboard: No access token available, skipping data load');
+      return;
+    }
 
+    console.log('StaffDashboard: Loading data with access token');
     try {
       const [inventoryData, emailData, taskData] = await Promise.all([
         inventoryAPI.getAll(session.access_token),
@@ -33,6 +37,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
       setInventory(inventoryData.items || []);
       setEmails(emailData.emails || []);
       setTasks(taskData.tasks || []);
+      console.log('StaffDashboard: Data loaded successfully');
     } catch (error) {
       console.error('Error loading dashboard data:', error);
     } finally {
