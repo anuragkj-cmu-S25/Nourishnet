@@ -68,7 +68,7 @@ export default function App() {
 
   return (
     <AuthProvider>
-      <Toaster />
+      <Toaster position="top-center" />
       <AuthenticatedApp />
     </AuthProvider>
   );

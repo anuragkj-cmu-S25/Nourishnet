@@ -168,12 +168,23 @@ export function StaffTasks() {
             <p className="text-gray-400 mt-2">Create a task to get started</p>
           </div>
         )}
+        
+        {/* Add Task Button for Desktop - Inside content area */}
+        <div className="hidden md:flex justify-center pt-4">
+          <Button
+            onClick={() => setIsAddModalOpen(true)}
+            className="w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center"
+            aria-label="Add task"
+          >
+            <Plus className="w-6 h-6" />
+          </Button>
+        </div>
       </div>
 
-      {/* Add Task Button */}
+      {/* Add Task Button for Mobile - Fixed position */}
       <Button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-20 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center"
+        className="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center"
         aria-label="Add task"
       >
         <Plus className="w-6 h-6" />

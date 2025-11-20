@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { Search, Eye } from 'lucide-react';
+import { Search, Eye, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
 import { Label } from '../ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '../ui/popover';
 import { toast } from 'sonner@2.0.3';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { inventoryAPI, sourcingAPI } from '../../utils/api';
@@ -118,9 +119,21 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
             return (
               <Card key={item.id} className="relative overflow-hidden">
                 {isLowStock && (
-                  <Badge className="absolute top-0 left-0 right-0 bg-yellow-400 text-yellow-900 rounded-none border-0 justify-center">
-                    AI PREDICTED LOW
-                  </Badge>
+                  <div className="absolute top-0 left-0 right-0 bg-yellow-400 text-yellow-900 rounded-t-lg flex items-center justify-center gap-1 py-1">
+                    <span className="uppercase tracking-wide">AI Predicted Low</span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="hover:bg-yellow-500/50 rounded-full p-0.5 transition-colors">
+                          <Info className="w-3.5 h-3.5" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-64" side="top">
+                        <p className="text-gray-700">
+                          Based on previous trends, you should restock this item ASAP.
+                        </p>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 )}
                 <div className={`p-4 ${isLowStock ? 'pt-8' : ''}`}>
                   <h3 className="text-gray-900 mb-2">{item.name}</h3>

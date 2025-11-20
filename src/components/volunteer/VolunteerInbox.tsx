@@ -31,15 +31,36 @@ export function VolunteerInbox() {
     if (!session?.access_token) return;
 
     try {
-      const today = new Date();
-      const eventDate = today.toISOString().split('T')[0];
+      // AI stubbed: extract date from email subject/body
+      const dateMatch = email.subject.match(/(November|December)\s+(\d+)/i) || 
+                       email.body.match(/(November|December)\s+(\d+)/i);
+      
+      let eventDate = new Date().toISOString().split('T')[0]; // default to today
+      let eventTime = '10:00';
+      
+      if (dateMatch) {
+        const month = dateMatch[1];
+        const day = parseInt(dateMatch[2]);
+        const monthNum = month.toLowerCase() === 'november' ? 10 : 11;
+        eventDate = `2024-${String(monthNum + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+      
+      // Try to extract time
+      const timeMatch = email.body.match(/(\d+)\s*(AM|PM)/i);
+      if (timeMatch) {
+        let hour = parseInt(timeMatch[1]);
+        const period = timeMatch[2].toUpperCase();
+        if (period === 'PM' && hour !== 12) hour += 12;
+        if (period === 'AM' && hour === 12) hour = 0;
+        eventTime = `${String(hour).padStart(2, '0')}:00`;
+      }
       
       await calendarAPI.createFromEmail(
         {
           emailId: email.id,
           title: email.subject,
           date: eventDate,
-          time: '10:00',
+          time: eventTime,
         },
         session.access_token
       );

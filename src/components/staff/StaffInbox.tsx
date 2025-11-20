@@ -21,6 +21,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
   const [selectedVolunteer, setSelectedVolunteer] = useState('');
   const [isForwardModalOpen, setIsForwardModalOpen] = useState(false);
   const [expandedEmail, setExpandedEmail] = useState<string | null>(null);
+  const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     loadData();
@@ -30,13 +31,15 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
     if (!session?.access_token) return;
 
     try {
-      const [emailData, volunteerData] = await Promise.all([
+      const [emailData, volunteerData, calendarData] = await Promise.all([
         emailAPI.getAll(session.access_token),
         volunteersAPI.getAll(session.access_token),
+        calendarAPI.getEvents(session.access_token),
       ]);
 
       setEmails(emailData.emails || []);
       setVolunteers(volunteerData.volunteers || []);
+      setEvents(calendarData.events || []);
     } catch (error) {
       console.error('Error loading inbox:', error);
       toast.error('Failed to load inbox');
@@ -74,16 +77,45 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
     if (!session?.access_token) return;
 
     try {
-      // AI stubbed: extract date from email
-      const today = new Date();
-      const eventDate = today.toISOString().split('T')[0];
+      // Check if event already exists for this email
+      const existingEvent = events.find(e => e.source_email_id === email.id);
+      if (existingEvent) {
+        toast('Event already exists in calendar');
+        onNavigate('calendar', new Date(existingEvent.date));
+        return;
+      }
+      
+      // AI stubbed: extract date from email subject/body
+      // Simple regex to find dates like "November 25th", "December 3rd", etc.
+      const dateMatch = email.subject.match(/(November|December)\s+(\d+)/i) || 
+                       email.body.match(/(November|December)\s+(\d+)/i);
+      
+      let eventDate = new Date().toISOString().split('T')[0]; // default to today
+      let eventTime = '10:00';
+      
+      if (dateMatch) {
+        const month = dateMatch[1];
+        const day = parseInt(dateMatch[2]);
+        const monthNum = month.toLowerCase() === 'november' ? 10 : 11; // 0-indexed
+        eventDate = `2024-${String(monthNum + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      }
+      
+      // Try to extract time
+      const timeMatch = email.body.match(/(\d+)\s*(AM|PM)/i);
+      if (timeMatch) {
+        let hour = parseInt(timeMatch[1]);
+        const period = timeMatch[2].toUpperCase();
+        if (period === 'PM' && hour !== 12) hour += 12;
+        if (period === 'AM' && hour === 12) hour = 0;
+        eventTime = `${String(hour).padStart(2, '0')}:00`;
+      }
       
       await calendarAPI.createFromEmail(
         {
           emailId: email.id,
           title: email.subject,
           date: eventDate,
-          time: '10:00',
+          time: eventTime,
         },
         session.access_token
       );
