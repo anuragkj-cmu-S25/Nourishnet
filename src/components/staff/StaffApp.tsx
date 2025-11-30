@@ -42,7 +42,7 @@ export function StaffApp() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 max-w-md mx-auto">
+    <div className="flex flex-col h-screen bg-[#FFFDF6] max-w-md mx-auto">
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         {renderScreen()}
@@ -56,7 +56,7 @@ export function StaffApp() {
               onClick={() => setActiveScreen('dashboard')}
               className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
                 activeScreen === 'dashboard'
-                  ? 'text-blue-600 bg-blue-50'
+                  ? 'text-[#A0C87B] bg-[#F2FFB5]'
                   : 'text-gray-600'
               }`}
             >
@@ -68,7 +68,7 @@ export function StaffApp() {
               onClick={() => setActiveScreen('inventory')}
               className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
                 activeScreen === 'inventory'
-                  ? 'text-blue-600 bg-blue-50'
+                  ? 'text-[#A0C87B] bg-[#F2FFB5]'
                   : 'text-gray-600'
               }`}
             >
@@ -80,7 +80,7 @@ export function StaffApp() {
               onClick={() => setActiveScreen('tasks')}
               className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
                 activeScreen === 'tasks'
-                  ? 'text-blue-600 bg-blue-50'
+                  ? 'text-[#A0C87B] bg-[#F2FFB5]'
                   : 'text-gray-600'
               }`}
             >
@@ -92,7 +92,7 @@ export function StaffApp() {
               onClick={() => setActiveScreen('inbox')}
               className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
                 activeScreen === 'inbox'
-                  ? 'text-blue-600 bg-blue-50'
+                  ? 'text-[#A0C87B] bg-[#F2FFB5]'
                   : 'text-gray-600'
               }`}
             >
@@ -104,7 +104,7 @@ export function StaffApp() {
               onClick={() => handleNavigate('calendar')}
               className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
                 activeScreen === 'calendar'
-                  ? 'text-blue-600 bg-blue-50'
+                  ? 'text-[#A0C87B] bg-[#F2FFB5]'
                   : 'text-gray-600'
               }`}
             >

@@ -78,7 +78,7 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
   const completedItems = sourcingList.filter(item => item.status === 'complete');
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 flex justify-center">
         <div className="w-full max-w-md px-4 py-4">
@@ -145,7 +145,7 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
                       {/* Expand Button */}
                       <button
                         onClick={() => toggleExpand(item.id)}
-                        className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                        className="flex items-center gap-2 text-[#A0C87B] hover:text-[#8DB668]"
                       >
                         {isExpanded ? (
                           <>

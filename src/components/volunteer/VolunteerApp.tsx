@@ -9,15 +9,23 @@ type VolunteerScreen = 'sourcing-list' | 'inbox' | 'calendar' | 'profile';
 
 export function VolunteerApp() {
   const [activeScreen, setActiveScreen] = useState<VolunteerScreen>('sourcing-list');
+  const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined);
+
+  const handleNavigate = (screen: VolunteerScreen, date?: Date) => {
+    setActiveScreen(screen);
+    if (screen === 'calendar' && date) {
+      setCalendarDate(date);
+    }
+  };
 
   const renderScreen = () => {
     switch (activeScreen) {
       case 'sourcing-list':
         return <VolunteerSourcingList />;
       case 'inbox':
-        return <VolunteerInbox onNavigate={setActiveScreen} />;
+        return <VolunteerInbox onNavigate={handleNavigate} />;
       case 'calendar':
-        return <VolunteerCalendar />;
+        return <VolunteerCalendar initialDate={calendarDate} />;
       case 'profile':
         return <VolunteerProfile />;
       default:
@@ -26,7 +34,7 @@ export function VolunteerApp() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 max-w-md mx-auto">
+    <div className="flex flex-col h-screen bg-[#FFFDF6] max-w-md mx-auto">
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         {renderScreen()}
@@ -39,7 +47,7 @@ export function VolunteerApp() {
             onClick={() => setActiveScreen('sourcing-list')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
               activeScreen === 'sourcing-list'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-[#A0C87B] bg-[#F2FFB5]'
                 : 'text-gray-600'
             }`}
           >
@@ -51,7 +59,7 @@ export function VolunteerApp() {
             onClick={() => setActiveScreen('inbox')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
               activeScreen === 'inbox'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-[#A0C87B] bg-[#F2FFB5]'
                 : 'text-gray-600'
             }`}
           >
@@ -63,7 +71,7 @@ export function VolunteerApp() {
             onClick={() => setActiveScreen('calendar')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
               activeScreen === 'calendar'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-[#A0C87B] bg-[#F2FFB5]'
                 : 'text-gray-600'
             }`}
           >
@@ -75,7 +83,7 @@ export function VolunteerApp() {
             onClick={() => setActiveScreen('profile')}
             className={`flex flex-col items-center justify-center px-4 py-2 rounded-lg transition-colors ${
               activeScreen === 'profile'
-                ? 'text-blue-600 bg-blue-50'
+                ? 'text-[#A0C87B] bg-[#F2FFB5]'
                 : 'text-gray-600'
             }`}
           >

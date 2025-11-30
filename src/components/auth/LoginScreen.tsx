@@ -5,7 +5,7 @@ import { Label } from '../ui/label';
 import { Card } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { useAuth } from '../../utils/auth/AuthContext';
-import { Package } from 'lucide-react';
+import Logo1 from '../../imports/Logo';
 
 interface LoginScreenProps {
   onSwitchToRegister: () => void;
@@ -33,13 +33,13 @@ export function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gradient-to-br from-blue-50 to-green-50">
+    <div className="flex flex-col h-screen bg-gradient-to-br from-[#F2FFB5] to-[#FFFDF6]">
       <div className="flex-1 flex items-center justify-center p-6">
         <Card className="w-full max-w-md p-8">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
-              <Package className="w-8 h-8 text-white" />
+            <div className="inline-flex items-center justify-center w-16 h-16 mb-4">
+              <Logo1 />
             </div>
             <h1 className="text-gray-900 mb-2">Welcome to NourishNet</h1>
             <p className="text-gray-600">Sign in to continue</p>
@@ -82,7 +82,7 @@ export function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-[#A0C87B] hover:bg-[#8DB668] text-white"
               size="lg"
               disabled={loading}
             >
@@ -96,7 +96,7 @@ export function LoginScreen({ onSwitchToRegister }: LoginScreenProps) {
               Don't have an account?{' '}
               <button
                 onClick={onSwitchToRegister}
-                className="text-blue-600 hover:text-blue-700"
+                className="text-[#A0C87B] hover:text-[#8DB668]"
               >
                 Register here
               </button>

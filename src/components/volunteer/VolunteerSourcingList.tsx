@@ -130,7 +130,7 @@ export function VolunteerSourcingList() {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#A0C87B] mx-auto mb-4"></div>
           <p className="text-gray-600">Loading sourcing list...</p>
         </div>
       </div>
@@ -138,7 +138,7 @@ export function VolunteerSourcingList() {
   }
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header - Fixed */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
         <div className="w-full max-w-md px-4 py-4">
@@ -178,7 +178,7 @@ export function VolunteerSourcingList() {
                       <p className="text-gray-600 mt-1">
                         Target: {item.targetQuantity} {item.unit}
                       </p>
-                      <p className="text-blue-600 mt-1">
+                      <p className="text-[#A0C87B] mt-1">
                         Still needed: {remainingNeeded} {item.unit}
                       </p>
                     </div>
@@ -188,7 +188,7 @@ export function VolunteerSourcingList() {
                       <div>
                         <button
                           onClick={() => toggleExpanded(item.id)}
-                          className="flex items-center gap-2 text-blue-600 hover:text-blue-700"
+                          className="flex items-center gap-2 text-[#A0C87B] hover:text-[#8DB668]"
                         >
                           {isExpanded ? (
                             <ChevronUp className="w-4 h-4" />
@@ -237,7 +237,7 @@ export function VolunteerSourcingList() {
                         </span>
                         <button
                           onClick={() => updateQuantity(item.id, 1)}
-                          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-blue-600 hover:bg-blue-700"
+                          className="w-10 h-10 rounded-full flex items-center justify-center transition-colors bg-[#A0C87B] hover:bg-[#8DB668]"
                           aria-label="Increase quantity"
                         >
                           <Plus className="w-5 h-5 text-white" />
@@ -249,7 +249,7 @@ export function VolunteerSourcingList() {
                     <Button
                       onClick={() => handleSubmitItem(item)}
                       disabled={item.sourcedQuantity === 0 || isSubmitting}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white disabled:bg-gray-300"
+                      className="w-full bg-[#A0C87B] hover:bg-[#8DB668] text-white disabled:bg-gray-300"
                     >
                       {isSubmitting ? 'Submitting...' : `Submit ${item.sourcedQuantity > 0 ? item.sourcedQuantity : ''} ${item.unit}`}
                     </Button>
@@ -283,7 +283,7 @@ export function VolunteerSourcingList() {
           <div className="pt-4">
             <Button
               onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+              className="w-full bg-[#A0C87B] hover:bg-[#8DB668] text-white"
             >
               Done
             </Button>

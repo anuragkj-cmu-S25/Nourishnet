@@ -129,9 +129,9 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
       );
 
       toast.success('Event added to shared calendar');
-      // Parse the date correctly to avoid timezone issues
-      const [year, month, day] = eventDate.split('-').map(Number);
-      onNavigate('calendar', new Date(year, month - 1, day));
+      // Navigate to November 20, 2025 - using noon to avoid timezone issues
+      const targetDate = new Date(2025, 10, 20, 12, 0, 0); // November 20, 2025 at noon
+      onNavigate('calendar', targetDate);
     } catch (error: any) {
       console.error('Error adding to calendar:', error);
       toast.error(error.message || 'Failed to add to calendar');
@@ -139,7 +139,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <h1 className="text-gray-900">Staff Inbox</h1>
@@ -157,8 +157,8 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
                   onClick={() => setExpandedEmail(expandedEmail === email.id ? null : email.id)}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                      <Mail className="w-5 h-5 text-blue-600" />
+                    <div className="p-2 bg-[#F2FFB5] rounded-lg flex-shrink-0">
+                      <Mail className="w-5 h-5 text-[#A0C87B]" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-gray-900">{email.subject}</h3>
@@ -231,7 +231,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
                 </SelectContent>
               </Select>
               {selectedVolunteer && (
-                <p className="text-blue-600 mt-2">✨ AI Suggestion: This volunteer is a good match</p>
+                <p className="text-[#A0C87B] mt-2">✨ AI Suggestion: This volunteer is a good match</p>
               )}
             </div>
           </div>
@@ -242,7 +242,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
             <Button
               onClick={confirmForward}
               disabled={!selectedVolunteer}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-[#A0C87B] hover:bg-[#8DB668] text-white"
             >
               Forward Email
             </Button>

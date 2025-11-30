@@ -57,7 +57,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
   const priorityTasks = tasks.filter(t => !t.completed).slice(0, 3);
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
@@ -80,17 +80,19 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
       <div className="flex-1 overflow-y-auto px-4 py-4 mt-2 space-y-4">
         {/* AI Alert Banner */}
         {lowStockItems.length > 0 && (
-          <Card className="bg-yellow-50 border-yellow-200 p-4">
+          <Card className="bg-white border-blue-500 border-2 p-4">
             <div className="flex items-start gap-3">
-              <AlertTriangle className="w-6 h-6 text-yellow-600 flex-shrink-0 mt-0.5" />
+              <div className="w-6 h-6 rounded-full border-2 border-blue-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-blue-500 text-xs font-bold">i</span>
+              </div>
               <div className="flex-1">
-                <h3 className="text-yellow-900">AI Alert: Low Stock Predicted</h3>
-                <p className="text-yellow-800 mt-1">
+                <h3 className="text-gray-900">AI Alert: Low Stock Predicted</h3>
+                <p className="text-gray-700 mt-1">
                   {lowStockItems.length} items are predicted to run low this week. Review inventory now.
                 </p>
                 <Button
                   onClick={() => onNavigate('inventory')}
-                  className="mt-3 bg-yellow-600 hover:bg-yellow-700 text-white"
+                  className="mt-3 bg-orange-500 hover:bg-orange-600 text-white"
                   size="sm"
                 >
                   View Inventory
@@ -102,10 +104,10 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
 
         {/* Key Metric Cards */}
         <div className="grid grid-cols-2 gap-4">
-          <Card className="p-5">
+          <Card className="p-5 bg-white">
             <div className="flex flex-col gap-3">
-              <div className="bg-blue-100 p-3 rounded-lg w-fit">
-                <Package className="w-6 h-6 text-blue-600" />
+              <div className="bg-[#F2FFB5] p-3 rounded-lg w-fit">
+                <Package className="w-6 h-6 text-[#A0C87B]" />
               </div>
               <div>
                 <p className="text-gray-500">Items in Stock</p>
@@ -115,12 +117,12 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
           </Card>
 
           <Card 
-            className="p-5 cursor-pointer hover:shadow-md transition-shadow"
+            className="p-5 bg-white cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => onNavigate('inbox')}
           >
             <div className="flex flex-col gap-3">
-              <div className="bg-blue-100 p-3 rounded-lg w-fit">
-                <Mail className="w-6 h-6 text-blue-600" />
+              <div className="bg-[#F2FFB5] p-3 rounded-lg w-fit">
+                <Mail className="w-6 h-6 text-[#A0C87B]" />
               </div>
               <div>
                 <p className="text-gray-500">Unread Emails</p>
@@ -133,12 +135,12 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
         {/* Restock Priorities Card */}
         {topRestockItems && (
           <Card 
-            className="p-5 cursor-pointer hover:shadow-md transition-shadow"
+            className="p-5 bg-white cursor-pointer hover:shadow-md transition-shadow"
             onClick={() => onNavigate('inventory')}
           >
             <div className="flex items-start gap-3">
-              <div className="bg-blue-100 p-3 rounded-lg flex-shrink-0">
-                <Apple className="w-6 h-6 text-blue-600" />
+              <div className="bg-[#F2FFB5] p-3 rounded-lg flex-shrink-0">
+                <Apple className="w-6 h-6 text-[#A0C87B]" />
               </div>
               <div className="flex-1">
                 <h3 className="text-gray-900">Top Items to Restock</h3>
@@ -149,15 +151,15 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
         )}
 
         {/* Today's Priority Tasks */}
-        <Card className="p-4">
+        <Card className="p-4 bg-white">
           <h3 className="text-gray-900 mb-3">Today's Priority Tasks</h3>
           <div className="space-y-3">
             {priorityTasks.length > 0 ? (
               priorityTasks.map((task) => (
-                <div key={task.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                <div key={task.id} className="flex items-center gap-3 p-3 bg-[#FAF6E9] rounded-lg">
                   <div className={`w-2 h-2 rounded-full ${
                     task.priority === 'high' ? 'bg-red-500' :
-                    task.priority === 'medium' ? 'bg-orange-500' : 'bg-yellow-500'
+                    task.priority === 'medium' ? 'bg-[#A0C87B]' : 'bg-[#F2FFB5]'
                   }`}></div>
                   <span className="text-gray-700 flex-1">{task.title}</span>
                 </div>
@@ -169,7 +171,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
           <Button
             onClick={() => onNavigate('tasks')}
             variant="outline"
-            className="w-full mt-4"
+            className="w-full mt-4 bg-[#A0C87B] hover:bg-[#8ab668] text-white border-[#A0C87B]"
           >
             View All Tasks
           </Button>

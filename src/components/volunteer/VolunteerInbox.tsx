@@ -7,7 +7,7 @@ import { useAuth } from '../../utils/auth/AuthContext';
 import { emailAPI, calendarAPI } from '../../utils/api';
 
 interface VolunteerInboxProps {
-  onNavigate: (screen: string) => void;
+  onNavigate: (screen: string, date?: Date) => void;
 }
 
 export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
@@ -45,7 +45,9 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
       const existingEvent = events.find(e => e.source_email_id === email.id);
       if (existingEvent) {
         toast('Event already exists in calendar');
-        onNavigate('calendar');
+        // Navigate to November 20, 2025
+        const targetDate = new Date(2025, 10, 20, 12, 0, 0);
+        onNavigate('calendar', targetDate);
         return;
       }
 
@@ -84,7 +86,9 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
       );
 
       toast.success('Event added to your calendar');
-      onNavigate('calendar');
+      // Navigate to November 20, 2025 - using noon to avoid timezone issues
+      const targetDate = new Date(2025, 10, 20, 12, 0, 0); // November 20, 2025 at noon
+      onNavigate('calendar', targetDate);
     } catch (error: any) {
       console.error('Error adding to calendar:', error);
       toast.error(error.message || 'Failed to add to calendar');
@@ -92,7 +96,7 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header - Fixed */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
         <div className="w-full max-w-md px-6 py-4">
@@ -112,8 +116,8 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
                   onClick={() => setExpandedEmail(expandedEmail === email.id ? null : email.id)}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-blue-100 rounded-lg flex-shrink-0">
-                      <Mail className="w-5 h-5 text-blue-600" />
+                    <div className="p-2 bg-[#F2FFB5] rounded-lg flex-shrink-0">
+                      <Mail className="w-5 h-5 text-[#A0C87B]" />
                     </div>
                     <div className="flex-1">
                       <h3 className="text-gray-900">{email.subject}</h3>

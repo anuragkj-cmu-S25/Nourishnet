@@ -91,7 +91,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
   const activeSourcingCount = sourcingList.filter(item => item.status === 'active').length;
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <h1 className="text-gray-900">Inventory & Sourcing</h1>
@@ -106,7 +106,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
             placeholder="Search inventory..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-[#FAF6E9]"
           />
         </div>
       </div>
@@ -117,14 +117,14 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
           {filteredInventory.map((item) => {
             const isLowStock = item.stock <= item.low_stock_threshold;
             return (
-              <Card key={item.id} className="relative overflow-hidden">
+              <Card key={item.id} className="relative overflow-hidden bg-white">
                 {isLowStock && (
-                  <div className="absolute top-0 left-0 right-0 bg-yellow-400 text-yellow-900 rounded-t-lg flex items-center justify-center gap-1 py-1">
-                    <span className="uppercase tracking-wide">AI Predicted Low</span>
+                  <div className="absolute top-0 left-0 right-0 bg-orange-500 text-white rounded-t-lg flex items-center justify-center gap-1 py-1 px-2">
+                    <span className="uppercase tracking-wide text-xs sm:text-sm">AI Predicted Low</span>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="hover:bg-yellow-500/50 rounded-full p-0.5 transition-colors">
-                          <Info className="w-3.5 h-3.5" />
+                        <button className="hover:bg-white/20 rounded-full p-0.5 transition-colors">
+                          <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                         </button>
                       </PopoverTrigger>
                       <PopoverContent className="w-64" side="top">
@@ -143,7 +143,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
                   <Button
                     onClick={() => handleAddToList(item)}
                     size="sm"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+                    className="w-full bg-[#A0C87B] hover:bg-[#8ab668] text-white"
                   >
                     Add to List
                   </Button>
@@ -158,7 +158,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
       {sourcingList.length > 0 && (
         <Button
           onClick={() => onNavigate('sourcing-monitor')}
-          className="fixed bottom-20 left-4 right-4 max-w-md mx-auto bg-green-600 hover:bg-green-700 text-white shadow-lg"
+          className="fixed bottom-20 left-4 right-4 max-w-md mx-auto bg-[#F2FFB5] hover:bg-[#e8f5a0] text-gray-900 shadow-lg border border-[#A0C87B]"
           size="lg"
         >
           <Eye className="w-5 h-5 mr-2" />
@@ -190,7 +190,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
                 placeholder="Enter target quantity"
                 value={targetQuantity}
                 onChange={(e) => setTargetQuantity(e.target.value)}
-                className="mt-1"
+                className="mt-1 bg-[#FAF6E9]"
               />
               <p className="text-gray-500 mt-1">This will be shared with all volunteers</p>
             </div>
@@ -202,7 +202,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
             <Button
               onClick={confirmAddToList}
               disabled={!targetQuantity}
-              className="bg-blue-600 hover:bg-blue-700 text-white"
+              className="bg-[#A0C87B] hover:bg-[#8ab668] text-white"
             >
               Add to List
             </Button>

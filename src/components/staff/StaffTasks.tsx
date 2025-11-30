@@ -97,7 +97,7 @@ export function StaffTasks() {
   });
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <h1 className="text-gray-900">Tasks</h1>
@@ -105,12 +105,18 @@ export function StaffTasks() {
 
       {/* Progress Section */}
       <div className="bg-white px-4 pb-4 border-b border-gray-200">
-        <Card className="p-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-700">Overall Progress</span>
-            <span className="text-gray-900">{completedCount} of {totalCount} complete</span>
+        <h3 className="text-gray-900 mb-3">Complete Meter</h3>
+        <Card className="p-4 bg-white border border-gray-200">
+          <div className="space-y-3">
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-gray-700">Overall Progress</span>
+                <span className="text-gray-900">{Math.round(progress)}%</span>
+              </div>
+              <Progress value={progress} className="h-2" />
+              <p className="text-gray-500 mt-1">{completedCount} of {totalCount} tasks completed</p>
+            </div>
           </div>
-          <Progress value={progress} className="h-2" />
         </Card>
       </div>
 
@@ -120,7 +126,7 @@ export function StaffTasks() {
           sortedTasks.map((task) => (
             <Card
               key={task.id}
-              className={`p-4 ${task.completed ? 'bg-gray-50' : 'bg-white'}`}
+              className={`p-4 ${task.completed ? 'bg-[#FAF6E9]' : 'bg-white'}`}
             >
               <div className="flex items-start gap-3">
                 <Checkbox
@@ -144,8 +150,8 @@ export function StaffTasks() {
                         task.priority === 'high'
                           ? 'bg-red-100 text-red-700'
                           : task.priority === 'medium'
-                          ? 'bg-orange-100 text-orange-700'
-                          : 'bg-yellow-100 text-yellow-700'
+                          ? 'bg-[#F2FFB5] text-gray-900'
+                          : 'bg-[#FAF6E9] text-gray-700'
                       }`}
                     >
                       {task.priority.toUpperCase()}
@@ -172,7 +178,7 @@ export function StaffTasks() {
         {/* Add Task Button for Desktop - Fixed position on right */}
         <Button
           onClick={() => setIsAddModalOpen(true)}
-          className="hidden md:flex fixed bottom-20 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg items-center justify-center z-50"
+          className="hidden md:flex fixed bottom-20 right-4 w-14 h-14 rounded-full bg-[#A0C87B] hover:bg-[#8ab668] text-white shadow-lg items-center justify-center z-50"
           style={{ maxWidth: 'calc(448px - 1rem)', right: 'max(1rem, calc(50% - 224px + 1rem))' }}
           aria-label="Add task"
         >
@@ -183,7 +189,7 @@ export function StaffTasks() {
       {/* Add Task Button for Mobile - Fixed position */}
       <Button
         onClick={() => setIsAddModalOpen(true)}
-        className="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-full bg-blue-600 hover:bg-blue-700 text-white shadow-lg flex items-center justify-center"
+        className="md:hidden fixed bottom-20 right-4 w-14 h-14 rounded-full bg-[#A0C87B] hover:bg-[#8ab668] text-white shadow-lg flex items-center justify-center"
         aria-label="Add task"
       >
         <Plus className="w-6 h-6" />

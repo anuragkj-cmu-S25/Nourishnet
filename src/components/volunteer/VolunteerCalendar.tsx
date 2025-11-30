@@ -5,34 +5,53 @@ import { useAuth } from '../../utils/auth/AuthContext';
 import { calendarAPI } from '../../utils/api';
 import { DayContentProps } from 'react-day-picker';
 
-export function VolunteerCalendar() {
+interface VolunteerCalendarProps {
+  initialDate?: Date;
+}
+
+export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
   const { session } = useAuth();
-  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [date, setDate] = useState<Date | undefined>(initialDate || new Date());
   const [events, setEvents] = useState<any[]>([]);
 
   useEffect(() => {
     loadEvents();
   }, [session]);
 
+  useEffect(() => {
+    if (initialDate) {
+      setDate(initialDate);
+    }
+  }, [initialDate]);
+
   const loadEvents = async () => {
     if (!session?.access_token) return;
 
     try {
       const data = await calendarAPI.getEvents(session.access_token);
+      console.log('Calendar events loaded:', data);
       setEvents(data.events || []);
     } catch (error) {
       console.error('Error loading calendar:', error);
     }
   };
 
+  // Helper to format date as YYYY-MM-DD in local timezone (not UTC)
+  const formatDateLocal = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   const selectedDateEvents = events.filter(
-    event => event.date === date?.toISOString().split('T')[0]
+    event => event.date === (date ? formatDateLocal(date) : '')
   );
 
   // Get dates that have events
   const eventDates = new Set(events.map(event => event.date));
 
-  // Custom day content to show blue dots
+  // Custom day content to show sage green dots
   const DayContent = (props: DayContentProps) => {
     const dayString = props.date.toISOString().split('T')[0];
     const hasEvent = eventDates.has(dayString);
@@ -41,14 +60,14 @@ export function VolunteerCalendar() {
       <div className="relative w-full h-full flex items-center justify-center">
         <span>{props.date.getDate()}</span>
         {hasEvent && (
-          <div className="absolute bottom-1 w-1 h-1 bg-blue-600 rounded-full"></div>
+          <div className="absolute bottom-1 w-1 h-1 bg-[#A0C87B] rounded-full"></div>
         )}
       </div>
     );
   };
 
   return (
-    <div className="flex flex-col h-full bg-gray-50">
+    <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header - Fixed */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
         <div className="w-full max-w-md px-6 py-4">
@@ -76,22 +95,27 @@ export function VolunteerCalendar() {
         {/* Events for Selected Date */}
         {date && (
           <div>
-            <h2 className="text-gray-700 mb-3">
-              Events for {date.toLocaleDateString()}
-            </h2>
+            <h3 className="text-gray-900 mb-3">
+              Tasks for {date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}
+            </h3>
             {selectedDateEvents.length > 0 ? (
               <div className="space-y-3">
                 {selectedDateEvents.map((event) => (
-                  <Card key={event.id} className="p-4">
-                    <h3 className="text-gray-900">{event.title}</h3>
-                    <p className="text-gray-600 mt-1">Time: {event.time}</p>
+                  <Card key={event.id} className="p-4 bg-[#F2FFB5] border-none">
+                    <div className="flex items-start gap-2">
+                      <div className="w-2 h-2 bg-[#A0C87B] rounded-full mt-2 flex-shrink-0"></div>
+                      <div className="flex-1">
+                        <h3 className="text-gray-900">{event.title}</h3>
+                        <p className="text-gray-600 mt-1">{event.time}</p>
+                      </div>
+                    </div>
                   </Card>
                 ))}
               </div>
             ) : (
-              <Card className="p-4">
-                <p className="text-gray-500 text-center">No events scheduled</p>
-              </Card>
+              <div className="border-t-2 border-b-2 border-dashed border-gray-300 py-4">
+                <p className="text-gray-500 text-center">No events scheduled for this date</p>
+              </div>
             )}
           </div>
         )}
