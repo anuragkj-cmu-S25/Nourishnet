@@ -81,14 +81,16 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
       const existingEvent = events.find(e => e.source_email_id === email.id);
       if (existingEvent) {
         toast('Event already exists in calendar');
-        onNavigate('calendar', new Date(existingEvent.date));
+        // Navigate to November 20, 2025 - using noon to avoid timezone issues
+        const targetDate = new Date(2025, 10, 20, 12, 0, 0); // November 20, 2025 at noon
+        onNavigate('calendar', targetDate);
         return;
       }
       
       // AI stubbed: extract date from email subject/body
       // Simple regex to find dates like "November 25th", "December 3rd", etc.
-      const dateMatch = email.subject.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d+)/i) || 
-                       email.body.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+(\d+)/i);
+      const dateMatch = email.subject.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\\s+(\\d+)/i) || 
+                       email.body.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\\s+(\\d+)/i);
       
       // Get today's date in local timezone
       const today = new Date();
@@ -109,7 +111,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
       }
       
       // Try to extract time
-      const timeMatch = email.body.match(/(\d+)\s*(AM|PM)/i);
+      const timeMatch = email.body.match(/(\\d+)\\s*(AM|PM)/i);
       if (timeMatch) {
         let hour = parseInt(timeMatch[1]);
         const period = timeMatch[2].toUpperCase();
