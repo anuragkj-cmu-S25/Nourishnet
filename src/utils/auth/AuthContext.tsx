@@ -31,6 +31,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchProfile = async (accessToken: string) => {
     try {
+      console.log('AuthContext: Fetching profile with token:', accessToken.substring(0, 20) + '...');
       const response = await fetch(
         `${supabaseUrl}/functions/v1/make-server-593da926/auth/profile`,
         {
@@ -42,10 +43,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.ok) {
         const data = await response.json();
+        console.log('AuthContext: Profile fetched successfully:', data.profile?.email);
         setUser(data.profile);
+      } else {
+        console.error('AuthContext: Profile fetch failed with status:', response.status);
+        const errorData = await response.json();
+        console.error('AuthContext: Profile fetch error:', errorData);
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('AuthContext: Error fetching profile:', error);
     }
   };
 

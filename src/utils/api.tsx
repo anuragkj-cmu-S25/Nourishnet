@@ -7,9 +7,12 @@ export async function apiRequest(
   options: RequestInit = {},
   accessToken?: string
 ) {
+  const authHeader = `Bearer ${accessToken || publicAnonKey}`;
+  console.log('API Request:', endpoint, 'Auth:', authHeader.substring(0, 30) + '...');
+  
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${accessToken || publicAnonKey}`,
+    'Authorization': authHeader,
     ...options.headers,
   };
 
@@ -20,6 +23,7 @@ export async function apiRequest(
 
   if (!response.ok) {
     const error = await response.json();
+    console.error('API Request Failed:', endpoint, 'Status:', response.status, 'Error:', error);
     throw new Error(error.error || 'API request failed');
   }
 
