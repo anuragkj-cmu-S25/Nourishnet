@@ -11,7 +11,7 @@ export default function Logo1() {
           <div className="absolute inset-0 flex items-center justify-center">
             <img 
               alt="Home" 
-              className="w-[70%] h-[70%] object-contain" 
+              className="w-[70%] h-[70%] object-contain brightness-0 invert" 
               src={imgHome} 
             />
           </div>
@@ -19,7 +19,7 @@ export default function Logo1() {
           <div className="absolute inset-0 flex items-center justify-center">
             <img 
               alt="Restaurant" 
-              className="w-[30%] h-[30%] object-contain" 
+              className="w-[30%] h-[30%] object-contain brightness-0 invert" 
               src={imgRestaurant} 
             />
           </div>
