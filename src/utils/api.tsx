@@ -112,6 +112,9 @@ export const calendarAPI = {
       method: 'POST',
       body: JSON.stringify(eventData),
     }, accessToken),
+
+  deleteEvent: (eventId: string, accessToken: string) =>
+    apiRequest(`/calendar/${eventId}`, { method: 'DELETE' }, accessToken),
 };
 
 // Profile API

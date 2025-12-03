@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Calendar } from 'lucide-react';
+import { Mail, Calendar, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { toast } from 'sonner@2.0.3';
@@ -15,6 +15,7 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
   const [emails, setEmails] = useState<any[]>([]);
   const [expandedEmail, setExpandedEmail] = useState<string | null>(null);
   const [events, setEvents] = useState<any[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -100,8 +101,34 @@ export function VolunteerInbox({ onNavigate }: VolunteerInboxProps) {
       {/* Header - Fixed */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
         <div className="w-full max-w-md px-6 py-4">
-          <h1 className="text-gray-900">My Inbox</h1>
-          <p className="text-gray-500 mt-1">{emails.length} messages</p>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-gray-900">My Inbox</h1>
+              <p className="text-gray-500 mt-1">{emails.length} messages</p>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Info"
+              >
+                <Info className="w-5 h-5 text-gray-600" />
+              </button>
+              {showInfo && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-20" 
+                    onClick={() => setShowInfo(false)}
+                  />
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                    <p className="text-sm text-gray-700">
+                      View messages forwarded by staff. Tap messages to expand. Add events to your calendar with one tap.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { ArrowLeft, ChevronDown, ChevronUp, CheckCircle2, X } from 'lucide-react';
+import { ArrowLeft, ChevronDown, ChevronUp, CheckCircle2, X, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
@@ -17,6 +17,7 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [itemLogs, setItemLogs] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -93,6 +94,28 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
             <div className="flex-1">
               <h1 className="text-gray-900">Sourcing Progress Monitor</h1>
               <p className="text-gray-500 mt-1">Track volunteer sourcing in real-time</p>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Show Info"
+              >
+                <Info className="w-5 h-5 text-gray-700" />
+              </button>
+              {showInfo && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-20" 
+                    onClick={() => setShowInfo(false)}
+                  />
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                    <p className="text-sm text-gray-700">
+                      Monitor real-time volunteer contributions. Tap items to see sourcing logs. Remove completed items with X.
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

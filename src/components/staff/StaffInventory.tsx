@@ -24,6 +24,7 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
   const [targetQuantity, setTargetQuantity] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -94,7 +95,34 @@ export function StaffInventory({ onNavigate }: StaffInventoryProps) {
     <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
-        <h1 className="text-gray-900">Inventory & Sourcing</h1>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-gray-900">Inventory & Sourcing</h1>
+            <p className="text-gray-500 mt-1">{inventory.length} items</p>
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Info"
+            >
+              <Info className="w-5 h-5 text-gray-600" />
+            </button>
+            {showInfo && (
+              <>
+                <div 
+                  className="fixed inset-0 z-20" 
+                  onClick={() => setShowInfo(false)}
+                />
+                <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                  <p className="text-sm text-gray-700">
+                    View all inventory items. Search to filter. Add low stock items to sourcing list for volunteers to collect.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Search Bar */}

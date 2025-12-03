@@ -581,6 +581,24 @@ app.post("/make-server-593da926/calendar/from-email", async (c) => {
   }
 });
 
+app.delete("/make-server-593da926/calendar/:id", async (c) => {
+  const { user, error } = await verifyAuth(c.req.header('Authorization'));
+  
+  if (error || !user) {
+    return c.json({ error: 'Unauthorized' }, 401);
+  }
+  
+  try {
+    const eventId = c.req.param('id');
+    await kv.del(`calendar:${eventId}`);
+    
+    return c.json({ success: true });
+  } catch (error) {
+    console.log('Delete calendar event error:', error);
+    return c.json({ error: 'Failed to delete calendar event' }, 500);
+  }
+});
+
 // ============ VOLUNTEERS ROUTE ============
 
 app.get("/make-server-593da926/volunteers", async (c) => {

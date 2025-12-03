@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Calendar } from '../ui/calendar';
 import { Card } from '../ui/card';
+import { X, Info } from 'lucide-react';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { calendarAPI } from '../../utils/api';
 import { DayContentProps } from 'react-day-picker';
+import { toast } from 'sonner';
 
 interface VolunteerCalendarProps {
   initialDate?: Date;
@@ -12,7 +14,9 @@ interface VolunteerCalendarProps {
 export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
   const { session } = useAuth();
   const [date, setDate] = useState<Date | undefined>(initialDate || new Date());
+  const [month, setMonth] = useState<Date>(initialDate || new Date());
   const [events, setEvents] = useState<any[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadEvents();
@@ -21,6 +25,7 @@ export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
   useEffect(() => {
     if (initialDate) {
       setDate(initialDate);
+      setMonth(initialDate);
     }
   }, [initialDate]);
 
@@ -33,6 +38,20 @@ export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
       setEvents(data.events || []);
     } catch (error) {
       console.error('Error loading calendar:', error);
+      toast.error('Failed to load calendar events');
+    }
+  };
+
+  const handleDeleteEvent = async (eventId: string) => {
+    if (!session?.access_token) return;
+
+    try {
+      await calendarAPI.deleteEvent(eventId, session.access_token);
+      toast.success('Event removed from calendar');
+      loadEvents();
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      toast.error('Failed to delete event');
     }
   };
 
@@ -71,8 +90,34 @@ export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
       {/* Header - Fixed */}
       <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-10 flex justify-center">
         <div className="w-full max-w-md px-6 py-4">
-          <h1 className="text-gray-900">My Calendar</h1>
-          <p className="text-gray-500 mt-1">Your personal schedule</p>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <h1 className="text-gray-900">My Calendar</h1>
+              <p className="text-gray-500 mt-1">Your personal schedule</p>
+            </div>
+            <div className="relative">
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Info"
+              >
+                <Info className="w-5 h-5 text-gray-600" />
+              </button>
+              {showInfo && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-20" 
+                    onClick={() => setShowInfo(false)}
+                  />
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                    <p className="text-sm text-gray-700">
+                      View team events and schedules. Tap a date to see details. Click X to remove events.
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -82,6 +127,8 @@ export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
           mode="single"
           selected={date}
           onSelect={setDate}
+          month={month}
+          onMonthChange={setMonth}
           className="rounded-md border bg-white shadow-sm w-full"
           classNames={{
             head_row: "flex justify-between",
@@ -101,13 +148,20 @@ export function VolunteerCalendar({ initialDate }: VolunteerCalendarProps) {
             {selectedDateEvents.length > 0 ? (
               <div className="space-y-3">
                 {selectedDateEvents.map((event) => (
-                  <Card key={event.id} className="p-4 bg-[#F2FFB5] border-none">
+                  <Card key={event.id} className="p-4 bg-[#F2FFB5] border-none relative">
                     <div className="flex items-start gap-2">
                       <div className="w-2 h-2 bg-[#A0C87B] rounded-full mt-2 flex-shrink-0"></div>
                       <div className="flex-1">
                         <h3 className="text-gray-900">{event.title}</h3>
                         <p className="text-gray-600 mt-1">{event.time}</p>
                       </div>
+                      <button
+                        className="text-gray-500 hover:text-gray-700 p-1"
+                        onClick={() => handleDeleteEvent(event.id)}
+                        aria-label="Delete event"
+                      >
+                        <X size={16} />
+                      </button>
                     </div>
                   </Card>
                 ))}

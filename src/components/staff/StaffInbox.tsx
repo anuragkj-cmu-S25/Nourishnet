@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Mail, Forward, Calendar } from 'lucide-react';
+import { Mail, Forward, Calendar, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
@@ -22,6 +22,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
   const [isForwardModalOpen, setIsForwardModalOpen] = useState(false);
   const [expandedEmail, setExpandedEmail] = useState<string | null>(null);
   const [events, setEvents] = useState<any[]>([]);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -144,8 +145,34 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
     <div className="flex flex-col h-full bg-[#FFFDF6]">
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
-        <h1 className="text-gray-900">Staff Inbox</h1>
-        <p className="text-gray-500 mt-1">{emails.length} messages</p>
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
+            <h1 className="text-gray-900">Staff Inbox</h1>
+            <p className="text-gray-500 mt-1">{emails.length} messages</p>
+          </div>
+          <div className="relative">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Info"
+            >
+              <Info className="w-5 h-5 text-gray-600" />
+            </button>
+            {showInfo && (
+              <>
+                <div 
+                  className="fixed inset-0 z-20" 
+                  onClick={() => setShowInfo(false)}
+                />
+                <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                  <p className="text-sm text-gray-700">
+                    Manage incoming messages. Forward to volunteers with AI suggestions. Add events to calendar with one tap.
+                  </p>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       {/* Emails List */}

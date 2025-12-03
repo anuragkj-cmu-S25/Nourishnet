@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { AlertTriangle, Package, Mail, Apple, LogOut } from 'lucide-react';
+import { Package, AlertTriangle, Users, Calendar, Info, LogOut, Mail, Apple } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { useAuth } from '../../utils/auth/AuthContext';
-import { inventoryAPI, emailAPI, tasksAPI } from '../../utils/api';
+import { inventoryAPI, sourcingAPI, emailAPI, calendarAPI, tasksAPI } from '../../utils/api';
+import { toast } from 'sonner';
 
 interface StaffDashboardProps {
   onNavigate: (screen: string, date?: Date) => void;
@@ -15,6 +16,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
   const [emails, setEmails] = useState<any[]>([]);
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -61,18 +63,40 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
       {/* Header */}
       <div className="bg-white px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <div>
+          <div className="flex-1">
             <h1 className="text-gray-900">Dashboard</h1>
             <p className="text-gray-500 mt-1">Hi, {user?.full_name || 'Staff Member'}</p>
           </div>
-          <Button
-            onClick={signOut}
-            variant="ghost"
-            size="sm"
-            className="text-gray-600"
-          >
-            <LogOut className="w-5 h-5" />
-          </Button>
+          <div className="flex items-center gap-2 relative">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              aria-label="Info"
+            >
+              <Info className="w-5 h-5 text-gray-600" />
+            </button>
+            {showInfo && (
+              <>
+                <div 
+                  className="fixed inset-0 z-20" 
+                  onClick={() => setShowInfo(false)}
+                />
+                <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                  <p className="text-sm text-gray-700">
+                    Your overview hub. Tap cards to navigate. AI alerts show predicted low stock items.
+                  </p>
+                </div>
+              </>
+            )}
+            <Button
+              onClick={signOut}
+              variant="ghost"
+              size="sm"
+              className="text-gray-600"
+            >
+              <LogOut className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Minus, Plus, CheckCircle2, RefreshCw, ChevronDown, ChevronUp } from 'lucide-react';
+import { Minus, Plus, CheckCircle2, RefreshCw, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
@@ -20,9 +20,11 @@ interface SourcingItem {
 export function VolunteerSourcingList() {
   const { user, session } = useAuth();
   const [sourcingItems, setSourcingItems] = useState<SourcingItem[]>([]);
+  const [completedItems, setCompletedItems] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   const [submittedItemName, setSubmittedItemName] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -52,6 +54,18 @@ export function VolunteerSourcingList() {
       
       setSourcingItems(items);
       setLogs(logsData.logs || []);
+      
+      // Get completed items that the current volunteer has contributed to
+      const allItems = sourcingData.items || [];
+      const myLogs = (logsData.logs || []).filter((log: any) => log.volunteer_id === user?.id);
+      
+      // Group by item_id to get unique items
+      const myItemIds = new Set(myLogs.map((log: any) => log.item_id));
+      const completed = allItems.filter((item: any) => 
+        item.status === 'complete' && myItemIds.has(item.id)
+      );
+      
+      setCompletedItems(completed);
     } catch (error) {
       console.error('Error loading sourcing list:', error);
       toast.error('Failed to load sourcing list');
@@ -147,14 +161,36 @@ export function VolunteerSourcingList() {
               <h1 className="text-gray-900">Today's Sourcing List</h1>
               <p className="text-gray-500 mt-1">Welcome, {user?.full_name}</p>
             </div>
-            <button
-              onClick={handleRefresh}
-              disabled={refreshing}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              aria-label="Refresh"
-            >
-              <RefreshCw className={`w-5 h-5 text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2 relative">
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Info"
+              >
+                <Info className="w-5 h-5 text-gray-600" />
+              </button>
+              {showInfo && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-20" 
+                    onClick={() => setShowInfo(false)}
+                  />
+                  <div className="absolute right-0 top-12 w-64 bg-white rounded-lg shadow-lg border border-gray-200 p-3 z-30">
+                    <p className="text-sm text-gray-700">
+                      Use +/- to set quantities you've sourced, then tap Submit. Your history shows completed items.
+                    </p>
+                  </div>
+                </>
+              )}
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                aria-label="Refresh"
+              >
+                <RefreshCw className={`w-5 h-5 text-gray-600 ${refreshing ? 'animate-spin' : ''}`} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -162,7 +198,7 @@ export function VolunteerSourcingList() {
       {/* Content - Account for fixed header and bottom nav */}
       <div className="flex-1 overflow-y-auto px-4 py-4 mt-24 mb-16">
         {sourcingItems.length > 0 ? (
-          <div className="space-y-3">
+          <div className="space-y-3 mb-6">
             {sourcingItems.map((item) => {
               const remainingNeeded = Math.max(0, item.targetQuantity - (item.totalSourced || 0));
               const isSubmitting = submittingItemId === item.id;
@@ -262,6 +298,36 @@ export function VolunteerSourcingList() {
           <div className="text-center py-12">
             <p className="text-gray-500">No active sourcing items at this time</p>
             <p className="text-gray-400 mt-2">Check back later for new assignments</p>
+          </div>
+        )}
+
+        {/* My History Section */}
+        {completedItems.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-gray-900 mb-3">My History</h2>
+            <div className="space-y-3">
+              {completedItems.map((item) => {
+                const myLogs = logs.filter(log => log.item_id === item.id && log.volunteer_id === user?.id);
+                const myTotal = myLogs.reduce((sum, log) => sum + log.quantity, 0);
+                
+                return (
+                  <Card key={item.id} className="p-4 bg-green-50 border-green-200">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle2 className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h3 className="text-gray-900">{item.name}</h3>
+                        <p className="text-gray-600 mt-1">
+                          You contributed: {myTotal} {item.unit}
+                        </p>
+                        <p className="text-green-700 mt-1">
+                          ✓ Completed - Target reached: {item.targetQuantity} {item.unit}
+                        </p>
+                      </div>
+                    </div>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>
