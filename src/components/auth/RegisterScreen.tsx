@@ -148,6 +148,21 @@ export function RegisterScreen({ onSwitchToLogin }: RegisterScreenProps) {
               </button>
             </p>
           </div>
+
+          {/* Landing Page Link */}
+          <div className="mt-4 text-center">
+            <p className="text-gray-500 text-sm">
+              Want to learn more?{' '}
+              <a
+                href="https://anuragkj-cmu-s25.github.io/Team_Food_Insecurity_Landing_Page/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[#A0C87B] hover:text-[#8DB668] underline"
+              >
+                Visit our website
+              </a>
+            </p>
+          </div>
         </Card>
       </div>
     </div>

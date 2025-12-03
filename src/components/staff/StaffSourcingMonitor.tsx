@@ -3,6 +3,7 @@ import { ArrowLeft, ChevronDown, ChevronUp, CheckCircle2, X, Info } from 'lucide
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Progress } from '../ui/progress';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { toast } from 'sonner@2.0.3';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { sourcingAPI } from '../../utils/api';
@@ -18,6 +19,7 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
   const [itemLogs, setItemLogs] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
+  const [removeConfirmItem, setRemoveConfirmItem] = useState<{id: string, name: string} | null>(null);
 
   useEffect(() => {
     loadData();
@@ -148,7 +150,7 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
                           </p>
                         </div>
                         <button
-                          onClick={() => handleRemoveItem(item.id, item.name)}
+                          onClick={() => setRemoveConfirmItem({id: item.id, name: item.name})}
                           className="text-gray-400 hover:text-red-600 transition-colors"
                           aria-label="Remove item"
                         >
@@ -263,6 +265,38 @@ export function StaffSourcingMonitor({ onBack }: StaffSourcingMonitorProps) {
           </div>
         )}
       </div>
+
+      {/* Remove Item Confirmation Dialog */}
+      <Dialog open={!!removeConfirmItem} onOpenChange={(open) => !open && setRemoveConfirmItem(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Remove from Sourcing List</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to remove "{removeConfirmItem?.name}" from the sourcing list?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setRemoveConfirmItem(null)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (removeConfirmItem) {
+                  handleRemoveItem(removeConfirmItem.id, removeConfirmItem.name);
+                  setRemoveConfirmItem(null);
+                }
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Remove
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

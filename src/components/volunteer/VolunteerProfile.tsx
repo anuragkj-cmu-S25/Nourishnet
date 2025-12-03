@@ -4,6 +4,7 @@ import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { toast } from 'sonner@2.0.3';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { profileAPI } from '../../utils/api';
@@ -13,6 +14,7 @@ export function VolunteerProfile() {
   const [fullName, setFullName] = useState(user?.full_name || '');
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   // Generate consistent random stats based on user ID
   const itemsSourced = user ? 42 + (user.id.charCodeAt(0) % 100) : 67;
@@ -126,16 +128,46 @@ export function VolunteerProfile() {
           </div>
         </Card>
 
-        {/* Sign Out Button */}
+        {/* Logout Button */}
         <Button
-          onClick={signOut}
+          onClick={() => setShowLogoutConfirm(true)}
           variant="outline"
-          className="w-full text-red-600 hover:text-red-700 hover:bg-red-50"
+          className="w-full border-[#A0C87B] text-[#A0C87B] hover:bg-[#F2FFB5]"
         >
           <LogOut className="w-4 h-4 mr-2" />
           Sign Out
         </Button>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Sign Out</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to sign out? You will be redirected to the login page.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowLogoutConfirm(false)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLogoutConfirm(false);
+                signOut();
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Sign Out
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

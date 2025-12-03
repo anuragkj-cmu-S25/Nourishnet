@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Package, AlertTriangle, Users, Calendar, Info, LogOut, Mail, Apple } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { inventoryAPI, sourcingAPI, emailAPI, calendarAPI, tasksAPI } from '../../utils/api';
 import { toast } from 'sonner';
@@ -17,6 +18,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
   const [tasks, setTasks] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -89,7 +91,7 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
               </>
             )}
             <Button
-              onClick={signOut}
+              onClick={() => setShowLogoutConfirm(true)}
               variant="ghost"
               size="sm"
               className="text-gray-600"
@@ -201,6 +203,36 @@ export function StaffDashboard({ onNavigate }: StaffDashboardProps) {
           </Button>
         </Card>
       </div>
+
+      {/* Logout Confirmation Dialog */}
+      <Dialog open={showLogoutConfirm} onOpenChange={setShowLogoutConfirm}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Log Out</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to log out? This will end your current session.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setShowLogoutConfirm(false)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                setShowLogoutConfirm(false);
+                signOut();
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Log Out
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

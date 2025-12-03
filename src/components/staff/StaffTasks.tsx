@@ -19,6 +19,7 @@ export function StaffTasks() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
   const [newTaskPriority, setNewTaskPriority] = useState('medium');
   const [loading, setLoading] = useState(true);
+  const [deleteConfirmTask, setDeleteConfirmTask] = useState<string | null>(null);
 
   useEffect(() => {
     loadTasks();
@@ -159,7 +160,7 @@ export function StaffTasks() {
                   </div>
                 </div>
                 <button
-                  onClick={() => handleDeleteTask(task.id)}
+                  onClick={() => setDeleteConfirmTask(task.id)}
                   className="text-gray-400 hover:text-red-600 transition-colors"
                   aria-label="Delete task"
                 >
@@ -237,6 +238,38 @@ export function StaffTasks() {
               className="bg-blue-600 hover:bg-blue-700 text-white"
             >
               Add Task
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Task Confirmation Dialog */}
+      <Dialog open={!!deleteConfirmTask} onOpenChange={(open) => !open && setDeleteConfirmTask(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Task</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this task? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteConfirmTask(null)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (deleteConfirmTask) {
+                  handleDeleteTask(deleteConfirmTask);
+                  setDeleteConfirmTask(null);
+                }
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Delete
             </Button>
           </DialogFooter>
         </DialogContent>

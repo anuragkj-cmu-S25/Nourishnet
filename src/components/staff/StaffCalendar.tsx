@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { Calendar } from '../ui/calendar';
 import { Card } from '../ui/card';
 import { X, Info } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
+import { Button } from '../ui/button';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { calendarAPI } from '../../utils/api';
 import { DayContentProps } from 'react-day-picker';
@@ -17,6 +19,7 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
   const [month, setMonth] = useState<Date>(initialDate || new Date());
   const [events, setEvents] = useState<any[]>([]);
   const [showInfo, setShowInfo] = useState(false);
+  const [deleteConfirmEvent, setDeleteConfirmEvent] = useState<string | null>(null);
 
   useEffect(() => {
     loadEvents();
@@ -157,7 +160,7 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
                       </div>
                       <button
                         className="text-gray-500 hover:text-gray-700 p-1"
-                        onClick={() => handleDeleteEvent(event.id)}
+                        onClick={() => setDeleteConfirmEvent(event.id)}
                         aria-label="Delete event"
                       >
                         <X size={16} />
@@ -174,6 +177,38 @@ export function StaffCalendar({ initialDate }: StaffCalendarProps) {
           </div>
         )}
       </div>
+
+      {/* Delete Event Confirmation Dialog */}
+      <Dialog open={!!deleteConfirmEvent} onOpenChange={(open) => !open && setDeleteConfirmEvent(null)}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Delete Event</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this event? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button
+              variant="outline"
+              onClick={() => setDeleteConfirmEvent(null)}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (deleteConfirmEvent) {
+                  handleDeleteEvent(deleteConfirmEvent);
+                  setDeleteConfirmEvent(null);
+                }
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
