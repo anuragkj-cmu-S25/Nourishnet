@@ -5,7 +5,7 @@ import { X, Info } from 'lucide-react';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { calendarAPI } from '../../utils/api';
 import { DayContentProps } from 'react-day-picker';
-import { toast } from 'sonner';
+import { toast } from 'sonner@2.0.3';
 
 interface StaffCalendarProps {
   initialDate?: Date;
