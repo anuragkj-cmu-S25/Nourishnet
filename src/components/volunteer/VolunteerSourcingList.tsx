@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Minus, Plus, CheckCircle2, RefreshCw, ChevronDown, ChevronUp, Info } from 'lucide-react';
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/dialog';
 import { toast } from 'sonner@2.0.3';
 import { useAuth } from '../../utils/auth/AuthContext';
 import { sourcingAPI } from '../../utils/api';
@@ -23,12 +23,11 @@ export function VolunteerSourcingList() {
   const [completedItems, setCompletedItems] = useState<any[]>([]);
   const [logs, setLogs] = useState<any[]>([]);
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
-  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
-  const [submittedItemName, setSubmittedItemName] = useState('');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [submittingItemId, setSubmittingItemId] = useState<string | null>(null);
+  const [confirmSubmitItem, setConfirmSubmitItem] = useState<SourcingItem | null>(null);
 
   useEffect(() => {
     loadData();
@@ -95,11 +94,6 @@ export function VolunteerSourcingList() {
   const handleSubmitItem = async (item: SourcingItem) => {
     if (!session?.access_token) return;
 
-    if (item.sourcedQuantity === 0) {
-      toast.error('Please add a quantity before submitting');
-      return;
-    }
-
     setSubmittingItemId(item.id);
 
     try {
@@ -108,8 +102,7 @@ export function VolunteerSourcingList() {
         session.access_token
       );
       
-      setSubmittedItemName(item.name);
-      setShowSuccessModal(true);
+      toast.success(`Successfully submitted ${item.sourcedQuantity} ${item.unit} of ${item.name}!`);
       
       setSourcingItems(items =>
         items.map(i => (i.id === item.id ? { ...i, sourcedQuantity: 0 } : i))
@@ -283,7 +276,13 @@ export function VolunteerSourcingList() {
 
                     {/* Submit Button */}
                     <Button
-                      onClick={() => handleSubmitItem(item)}
+                      onClick={() => {
+                        if (item.sourcedQuantity === 0) {
+                          toast.error('Please add a quantity before submitting');
+                          return;
+                        }
+                        setConfirmSubmitItem(item);
+                      }}
                       disabled={item.sourcedQuantity === 0 || isSubmitting}
                       className="w-full bg-[#A0C87B] hover:bg-[#8DB668] text-white disabled:bg-gray-300"
                     >
@@ -332,28 +331,35 @@ export function VolunteerSourcingList() {
         )}
       </div>
 
-      {/* Success Modal */}
-      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+      {/* Confirm Submit Dialog */}
+      <Dialog open={confirmSubmitItem !== null} onOpenChange={(open) => !open && setConfirmSubmitItem(null)}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <div className="flex justify-center mb-4">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-10 h-10 text-green-600" />
-              </div>
-            </div>
-            <DialogTitle className="text-center">Contribution Submitted!</DialogTitle>
-            <DialogDescription className="text-center">
-              Thank you for sourcing {submittedItemName}! The inventory has been updated.
+            <DialogTitle>Confirm Submission</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to submit {confirmSubmitItem?.sourcedQuantity} {confirmSubmitItem?.unit} of {confirmSubmitItem?.name}?
             </DialogDescription>
           </DialogHeader>
-          <div className="pt-4">
+          <DialogFooter className="gap-2">
             <Button
-              onClick={() => setShowSuccessModal(false)}
-              className="w-full bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+              variant="outline"
+              onClick={() => setConfirmSubmitItem(null)}
+              className="flex-1"
             >
-              Done
+              Cancel
             </Button>
-          </div>
+            <Button
+              onClick={() => {
+                if (confirmSubmitItem) {
+                  handleSubmitItem(confirmSubmitItem);
+                  setConfirmSubmitItem(null);
+                }
+              }}
+              className="flex-1 bg-[#A0C87B] hover:bg-[#8DB668] text-white"
+            >
+              Submit
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
