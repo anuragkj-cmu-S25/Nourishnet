@@ -260,7 +260,7 @@ export function StaffInbox({ onNavigate }: StaffInboxProps) {
                 </SelectContent>
               </Select>
               {selectedVolunteer && (
-                <p className="text-[#A0C87B] mt-2">✨ AI Suggestion: This volunteer is a good match</p>
+                <p className="text-[#A0C87B] mt-2">✨ The email should be forwarded to this volunteer</p>
               )}
             </div>
           </div>
