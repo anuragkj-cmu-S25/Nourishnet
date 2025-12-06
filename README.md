@@ -2,6 +2,7 @@
 
 A mobile-first web application designed to streamline daily operations for food banks and their volunteers.
 
+##### [Style Guide](https://www.figma.com/proto/atcHOcQUDxep4uT64E7iVD/Untitled?node-id=2-2&p=f&t=TzVTnmNzUZDfflKb-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1)
 ---
 
 ## 📖 Table of Contents
