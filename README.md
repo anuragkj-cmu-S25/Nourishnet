@@ -104,6 +104,21 @@ To get a local copy up and running, follow these simple steps.
 
 ---
 
+### ⚠️ Limitations & Future Work
+
+As a project developed within an academic timeframe, this MVP has a few features that are currently simulated ("stubbed") and represent opportunities for future development.
+
+*   **Email Integration:**
+    *   **Limitation:** The staff inbox is not connected to a live email server (e.g., via IMAP). The emails displayed are currently hardcoded in the database for demonstration purposes.
+    *   **Future Work:** Integrate with an email service like SendGrid or connect directly to a food bank's email account to process real donation offers.
+
+*   **AI Stock Prediction:**
+    *   **Limitation:** The "AI Predicted Low Stock" alert is based on a simple, hardcoded threshold (`stock <= low_stock_threshold`) for each item in the database, not a true machine learning model.
+    *   **Future Work:** Develop and integrate a predictive model that analyzes historical consumption rates, seasonality, and donation trends to provide more accurate stock forecasts.
+
+*   **AI Email Processing:**
+    *   **Limitation:** The "AI Forward Suggestion" for emails is currently a simple function that randomly selects a volunteer. It does not use advanced natural language processing.
+    *   **Future Work:** Implement a true RAG (Retrieval-Augmented Generation) model to parse incoming emails, accurately extract logistical details (items, dates, locations), and suggest the most appropriate volunteer based on their availability or proximity.
 
 ## 🎉 Acknowledgments
 
